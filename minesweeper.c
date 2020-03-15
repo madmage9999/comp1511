@@ -54,10 +54,10 @@ int main(void) {
     //Scans how many mines
     int noMines = 0;
     scanf("%d", &noMines);
-    while (noMines <= 0) {
+    /*while (noMines <= 0) {
        printf("How many mines? ");
        scanf("%d", &noMines); 
-    }
+    }*/
     int mineCounter = 0;
     printf("Enter pairs:\n");
 
@@ -89,7 +89,7 @@ int main(void) {
     int gameCounter = 0;
     printf("Game Started\n");
     print_debug_minefield(minefield);
-    printf("Entering second loop\n");
+    //printf("Entering second loop\n");
     while(win == 1 && 0 < scanf("%d", &detector)) {
     printf("in loop\n");
         if (hintCounter == 3) {
@@ -97,41 +97,41 @@ int main(void) {
         }
         
         else if (detector == DETECT_ROW && hintCounter < 3) {
-            printf("detecting row");
+            printf("detecting row\n");
             scanf("%d", &aCounter);
             rowCount((minefield), aCounter);
             if (gameCounter == 0) {
-              print_debug_minefield(minefield);
+                print_debug_minefield(minefield);
             }
             else {
-              printGameField(minefield, win);
+                printGameField(minefield, win);
             }
             hintCounter ++;
 
         }
 
         else if (detector == DETECT_COL && hintCounter < 3) {
-            printf("detecting column");
+            printf("detecting column\n");
             scanf("%d", &aCounter);
             colCount((minefield), aCounter);
             if (gameCounter == 0) {
-              print_debug_minefield(minefield);
+                print_debug_minefield(minefield);
             }
             else {
-              printGameField(minefield, win);
+                printGameField(minefield, win);
             }
             hintCounter ++;
         }
 
         else if (detector == DETECT_SQUARE && hintCounter < 3) {
-            printf("detecting square");
+            printf("detecting square\n");
             scanf("%d %d %d", &aCounter, &bCounter, &cCounter);
             squareCheck((minefield), aCounter, bCounter, cCounter);
             if (gameCounter == 0) {
-              print_debug_minefield(minefield);
+                print_debug_minefield(minefield);
             }
             else {
-              printGameField(minefield, win);
+                printGameField(minefield, win);
             }
             hintCounter ++;
         }
@@ -151,18 +151,20 @@ int main(void) {
         }*/
 
         else if (detector == GAMEPLAY_MODE) {
-          printf("Gameplay mode activated\n");
-          printGameField(minefield, win);
+            printf("Gameplay mode activated\n");
+            printGameField(minefield, win);
 
         }
 
         else if (detector == DEBUG_MODE) {
-          printf("Debug mode activated\n");
-          print_debug_minefield(minefield);
+            printf("Debug mode activated\n");
+            print_debug_minefield(minefield);
 
         }
     }
-    printf("Game over\n");
+    if (win == 0) {
+        printf("Game over\n");
+    }
 
     return 0;
 }
@@ -228,11 +230,11 @@ void colCount(int minefield[SIZE][SIZE], int aCounter) {
 void squareCheck(int minefield[SIZE][SIZE], int aCounter,
      int bCounter, int cCounter) {
     int mineCounter = 0;
-    int x = 0;
+    //int x = 0;
     //int y = 0;
     //int z = 0;
     //while()
-    while(x < SQUARE_SIZE) {
+    //while(x < SQUARE_SIZE) {
         if((minefield[aCounter][bCounter]) == 2){
             mineCounter ++;
         }
@@ -264,7 +266,7 @@ void squareCheck(int minefield[SIZE][SIZE], int aCounter,
 column %d of size %d\n", mineCounter, aCounter, bCounter, cCounter);
 
 }
-}
+//}
 
 //Reveals mines in square
 /*void squareReveal((int minefield[SIZE][SIZE]), int aCounter, int bCounter, int win) {
@@ -290,19 +292,19 @@ void printGameField(int minefield[SIZE][SIZE], int win) {
     while (i < SIZE) {
         int j = 0;
         printf("0%d |", i);
-            while (j < SIZE){
-                if (minefield[i][j] == VISIBLE_SAFE){
-                    printf("   ");
-                }
-                if (minefield[i][j] == HIDDEN_MINE || minefield[i][j] == HIDDEN_SAFE) {
+        while (j < SIZE){
+            if (minefield[i][j] == VISIBLE_SAFE){
+                printf("   ");
+            }
+            if (minefield[i][j] == HIDDEN_MINE || minefield[i][j] == HIDDEN_SAFE) {
                     printf("## ");
-                }
+            }
             j ++;
         
-            }
-        printf("|");
-        printf("\n");
-        i ++;
+        }
+    printf("|");
+    printf("\n");
+    i ++;
   }
   printf("   -------------------------\n");
 }
