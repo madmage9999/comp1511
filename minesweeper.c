@@ -56,7 +56,7 @@ int main(void) {
     scanf("%d", &noMines);
     /*while (noMines <= 0) {
        printf("How many mines? ");
-       scanf("%d", &noMines); 
+       scanf("%d", &noMines);
     }*/
     int mineCounter = 0;
     printf("Enter pairs:\n");
@@ -91,13 +91,15 @@ int main(void) {
     print_debug_minefield(minefield);
     //printf("Entering second loop\n");
     while(win == 1 && 0 < scanf("%d", &detector)) {
-    printf("in loop\n");
-        if (hintCounter == 3) {
+    //printf("in loop\n");
+        if (hintCounter == HINTS && detector <=DETECT_SQUARE) {
+            scanf("%d %d %d", &aCounter, &bCounter, &cCounter);
             printf("Help already used\n");
+            printf("%d\n", hintCounter);
         }
-        
+
         else if (detector == DETECT_ROW && hintCounter < 3) {
-            printf("detecting row\n");
+            //printf("detecting row\n");
             scanf("%d", &aCounter);
             rowCount((minefield), aCounter);
             if (gameCounter == 0) {
@@ -111,7 +113,7 @@ int main(void) {
         }
 
         else if (detector == DETECT_COL && hintCounter < 3) {
-            printf("detecting column\n");
+            //printf("detecting column\n");
             scanf("%d", &aCounter);
             colCount((minefield), aCounter);
             if (gameCounter == 0) {
@@ -124,7 +126,7 @@ int main(void) {
         }
 
         else if (detector == DETECT_SQUARE && hintCounter < 3) {
-            printf("detecting square\n");
+            //printf("detecting square\n");
             scanf("%d %d %d", &aCounter, &bCounter, &cCounter);
             squareCheck((minefield), aCounter, bCounter, cCounter);
             if (gameCounter == 0) {
@@ -230,40 +232,31 @@ void colCount(int minefield[SIZE][SIZE], int aCounter) {
 void squareCheck(int minefield[SIZE][SIZE], int aCounter,
      int bCounter, int cCounter) {
     int mineCounter = 0;
-    //int x = 0;
-    //int y = 0;
-    //int z = 0;
-    //while()
-    //while(x < SQUARE_SIZE) {
-        if((minefield[aCounter][bCounter]) == 2){
+    int x = aCounter;
+    int y = bCounter;
+    int z = 0;
+    if (cCounter == 3) {
+        aCounter --;
+        bCounter --;
+    }
+    if (cCounter == 5) {
+        aCounter = aCounter - 2;
+        bCounter = bCounter - 2;
+    }
+    while (z < cCounter * cCounter && aCounter >=0 && bCounter >= 0 &&
+        aCounter <SIZE && bCounter < SIZE) {
+        if ((minefield[aCounter][bCounter]) == 2){
             mineCounter ++;
         }
-        if((minefield[aCounter][bCounter - 1]) == 2){
-            mineCounter ++;
+        z ++;
+        bCounter ++;
+        if (z == 1) {
+            z = 0;
+            aCounter ++;
         }
-        if((minefield[aCounter - 1][bCounter - 1]) == 2){
-            mineCounter ++;
-        }
-        if((minefield[aCounter - 1][bCounter]) == 2){
-            mineCounter ++;
-        }
-        if((minefield[aCounter - 1][bCounter + 1]) == 2){
-            mineCounter ++;
-        }
-        if((minefield[aCounter][bCounter + 1]) == 2){
-            mineCounter ++;
-        }
-        if((minefield[aCounter + 1][bCounter + 1]) == 2){
-            mineCounter ++;
-        }
-        if((minefield[aCounter + 1][bCounter]) == 2){
-            mineCounter ++;
-        }
-        if((minefield[aCounter + 1][bCounter - 1]) == 2){
-            mineCounter ++;
-        }
+    }
     printf("There are %d mine(s) in the square centered at row %d, \
-column %d of size %d\n", mineCounter, aCounter, bCounter, cCounter);
+column %d of size %d\n", mineCounter, x, y, cCounter);
 
 }
 //}
@@ -300,7 +293,7 @@ void printGameField(int minefield[SIZE][SIZE], int win) {
                     printf("## ");
             }
             j ++;
-        
+
         }
     printf("|");
     printf("\n");
