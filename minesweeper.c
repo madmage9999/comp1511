@@ -40,9 +40,10 @@ void rowCount(int minefield[SIZE][SIZE], int aCounter);
 void colCount(int minefield[SIZE][SIZE], int aCounter);
 int squareCheck(int minefield[SIZE][SIZE], int aCounter,
      int bCounter, int cCounter);
-void squareReveal(int minefield[SIZE][SIZE], int aCounter,
+int squareReveal(int minefield[SIZE][SIZE], int aCounter,
      int bCounter, int win, int mineCounter);
 void printGameField(int minefield[SIZE][SIZE], int win);
+int fieldCheck(int minefield[SIZE][SIZE], int win);
 
 int main(void) {
     //initialise minefield
@@ -92,6 +93,7 @@ int main(void) {
     //printf("Entering second loop\n");
     while(win == 1 && 0 < scanf("%d", &detector)) {
     //printf("in loop\n");
+        win = fieldCheck((minefield), win);
         if (hintCounter == HINTS && detector <=DETECT_SQUARE) {
             scanf("%d %d %d", &aCounter, &bCounter, &cCounter);
             printf("Help already used\n");
@@ -144,7 +146,7 @@ column %d of size %d\n", mineCounter, aCounter, bCounter, cCounter);
         else if (detector == REVEAL_SQUARE) {
             scanf("%d %d", &aCounter, &bCounter);
             mineCounter = squareCheck((minefield), aCounter, bCounter, cCounter);
-            squareReveal((minefield), aCounter, bCounter, win, mineCounter);
+            win = squareReveal((minefield), aCounter, bCounter, win, mineCounter);
             if (gameCounter == 0) {
                 print_debug_minefield(minefield);
             }
@@ -168,9 +170,9 @@ column %d of size %d\n", mineCounter, aCounter, bCounter, cCounter);
 
         }
     }
-    if (win == 0) {
-        printf("Game over\n");
-    }
+    //if (win == 0) {
+        //printf("Game over\n");
+    
 
     return 0;
 }
@@ -273,38 +275,43 @@ int squareCheck(int minefield[SIZE][SIZE], int aCounter,
 
 
 //Reveals mines in square
-void squareReveal(int minefield[SIZE][SIZE], int aCounter, int bCounter, int win, int mineCounter) {
+int squareReveal(int minefield[SIZE][SIZE], int aCounter, int bCounter, int win, int mineCounter) {
     //int x = 0;
     int z = 0;
     //printf("%d\n", aCounter);
     //printf("%d\n", bCounter);
     //printf("%d\n", mineCounter);
     int a = aCounter;
-
+    int b = bCounter;
     aCounter --;
     bCounter --;
-    int b = bCounter;
-    if (mineCounter > 0) {
+
+    if (mineCounter > 0 && minefield[a][b] != HIDDEN_MINE) {
         minefield[a][b] = VISIBLE_SAFE;
     } else {
-        while (z < 9 && aCounter >= 0 && bCounter >= 0 &&
-            aCounter < SIZE && bCounter < SIZE && win == 1) {
+        while (z < 9 && win == 1) {
 
-            if (minefield[aCounter][bCounter] == HIDDEN_SAFE) {
+            if (aCounter >= 0 && bCounter >= 0 &&
+            aCounter < SIZE && bCounter < SIZE && 
+            minefield[aCounter][bCounter] == HIDDEN_SAFE) {
                 minefield[aCounter][bCounter] = VISIBLE_SAFE;
             }
-            else if ((minefield[aCounter][bCounter]) == HIDDEN_MINE) {
+            else if ((aCounter >= 0 && bCounter >= 0 &&
+            aCounter < SIZE && bCounter < SIZE && 
+            (minefield[aCounter][bCounter]) == HIDDEN_MINE)) {
                 win = 0;
                 printf("Game over\n");
+                break;
             }
             z++;
             bCounter ++;
             if (z % 3 == 0) {
                 aCounter ++;
-                bCounter = b;
+                bCounter = b - 1;
             }
         }
     }
+    return win;
 }
 //Prints gameplay field
 void printGameField(int minefield[SIZE][SIZE], int win) {
@@ -336,6 +343,27 @@ void printGameField(int minefield[SIZE][SIZE], int win) {
     printf("\n");
     i ++;
     }
-    printf("   -------------------------\n");
+    printf("   --------------------------\n");
 }
+
+//Checks if game is lost yet
+int fieldCheck(int minefield[SIZE][SIZE], int win) {
+    int i = 0;
+    int x = 0;
+    while (i < SIZE) {
+        int j = 0;
+        while (j < SIZE) {
+            if (minefield[i][j] == HIDDEN_SAFE || minefield[i][j] == VISIBLE_SAFE) {
+                x ++;
+            } 
+            else if (x < 0) {
+                win = 0;
+                break;
+            }
+            j++;
+        }
+        i++;
+    }
+    return win;
+} 
 
